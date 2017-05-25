@@ -1,5 +1,7 @@
 package bot;
 
+import bot.cliente.Cliente;
+import bot.cliente.ClienteRepository;
 import bot.estados.Estado;
 import bot.estados.EstadoInicial;
 import bot.model.Update;
@@ -11,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,15 +24,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class Controller{
     
     @Autowired
+    private ClienteRepository clienteRepository;
+    
+    @Autowired
+    private ApplicationContext context;
+    
+    @Autowired
     private CervejaRepository cervejaRepository;
     
     
     public Map<Integer, Estado> estados = new HashMap<Integer, Estado>();
     private static final String BOT_ID = "374481790:AAHgscpBDG2zs4VsDbeg140VmSVZZeItPEw";
     
-    
-    @Autowired
-    private EstadoInicial estadoInicial;
     
     @RequestMapping(method=RequestMethod.POST, value="/update")
     public Result ReceberUpdate(@RequestBody Update update){
@@ -38,15 +44,21 @@ public class Controller{
         preencheBanco();
         
         
+        Cliente c = buscarCliente(update);
+        
+        
         
         //System.out.println("TEXTO = " + update.getMessage().getText());
         String mensagem = update.getMessage().getText();
         int user_id = update.getMessage().getFrom().getId();
         
-                
+        
+
+
+        
         Estado e = estados.get(user_id);
         if (e == null){
-            e = estadoInicial;
+            e = new EstadoInicial(context, c);
         }
         e.processaTexto(mensagem);
         
@@ -84,6 +96,33 @@ public class Controller{
         
         
         
+        
+    }
+
+    private Cliente buscarCliente(Update update) {
+        
+        Integer idCliente = update.getMessage().getFrom().getId();
+        
+        Cliente c = clienteRepository.findOne(idCliente);
+        
+        if(c == null){
+            Cliente novo = new Cliente();
+            novo.setFirst_name(update.getMessage().getFrom().getFirst_name());
+            novo.setLast_name(update.getMessage().getFrom().getLast_name());
+            novo.setId(idCliente);
+            novo.setStatus("Baby");
+            
+            c = clienteRepository.save(novo);
+        }
+        
+        
+        //Teste apagar iusso
+        for(Cliente cli : clienteRepository.findAll()){
+            System.out.println("Cli:" + cli.first_name + " " + cli.id + "  status:" + cli.getStatus());
+        }
+        
+        
+        return c;
         
     }
 }

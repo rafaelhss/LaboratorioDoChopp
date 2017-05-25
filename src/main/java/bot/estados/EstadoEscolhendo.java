@@ -4,13 +4,17 @@ import bot.dao.EspetinhoDAO;
 import bot.dao.PorcoesDAO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EstadoEscolhendo extends Estado {
 
-    @Autowired
-    private EstadoBebidas estadoBebidas;
+   
+
+    public EstadoEscolhendo(ApplicationContext context) {
+        super(context);
+    }
     
     
     @Override
@@ -23,7 +27,7 @@ public class EstadoEscolhendo extends Estado {
                                "3 - REFRIGERANTES," + System.lineSeparator() +
                                "4 - SUCOS" + System.lineSeparator() +
                                "5 - AGUA";
-            proximoEstado = estadoBebidas;
+            proximoEstado = new EstadoBebidas(context);
             
         } else if(texto.trim().equals("2")){
             List<String> opcoes = new EspetinhoDAO().recuperaOpcoesEspetinhos();
@@ -32,7 +36,7 @@ public class EstadoEscolhendo extends Estado {
             for(int i=0; i < opcoes.size() ; i++){
                 mensagemResposta += System.lineSeparator() + (i+1) + " - " + opcoes.get(i);
             }            
-            proximoEstado = new EstadoEspetinho();
+            proximoEstado = new EstadoEspetinho(context);
             
         } else if(texto.trim().equals("3")){
             List<String> opcoes = new PorcoesDAO().recuperaOpcoesPorcoes();
@@ -41,7 +45,7 @@ public class EstadoEscolhendo extends Estado {
             for(int i=0; i < opcoes.size() ; i++){
                 mensagemResposta += System.lineSeparator() + (i+1) + " - " + opcoes.get(i);
             }            
-            proximoEstado = new EstadoPorcoes();
+            proximoEstado = new EstadoPorcoes(context);
             
         } else {
             mensagemResposta = "Por favor, escolha as opções entre 1, 2 ou 3!";

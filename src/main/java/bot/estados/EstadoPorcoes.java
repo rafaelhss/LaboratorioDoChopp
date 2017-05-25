@@ -2,8 +2,13 @@ package bot.estados;
 
 import bot.dao.PorcoesDAO;
 import java.util.List;
+import org.springframework.context.ApplicationContext;
 
 public class EstadoPorcoes extends Estado {
+
+    public EstadoPorcoes(ApplicationContext context) {
+        super(context);
+    }
 
     @Override
     public void processaTexto(String texto) {
@@ -14,7 +19,7 @@ public class EstadoPorcoes extends Estado {
             int opcao = Integer.parseInt(texto.trim()) - 1;
             mensagemResposta = "legal, voce escolheu porção de " + opcoes.get(opcao) + "." + System.lineSeparator() +
                                 "Quantas deseja?";
-            proximoEstado = new EstadoQuantidade(opcoes.get(opcao));
+            proximoEstado = new EstadoQuantidade(opcoes.get(opcao), context);
         } catch (Exception e){
             mensagemResposta = "Por favor, escolha uma opção válida!";
             proximoEstado = this;

@@ -3,17 +3,18 @@ package bot.estados;
 import bot.dao.CervejaDAO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 public class EstadoQuantidade extends Estado{
     
     private String item;
     
-    public EstadoQuantidade(String escolhido){
+    public EstadoQuantidade(String escolhido, ApplicationContext context){
+        super(context);
         item = escolhido;
     }
 
-    @Autowired
-    private CervejaDAO cervejaDAO;
+   private CervejaDAO cervejaDAO = new CervejaDAO(context);
     
     @Override
     public void processaTexto(String texto) {

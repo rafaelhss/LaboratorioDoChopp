@@ -3,12 +3,14 @@ package bot.estados;
 import bot.dao.CervejaDAO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 public class EstadoQuantidadeCervejas extends Estado{
     
     private String cerveja;
     
-    public EstadoQuantidadeCervejas(String escolhida){
+    public EstadoQuantidadeCervejas(String escolhida,  ApplicationContext context){
+        super(context);
         cerveja = escolhida;
     }
     @Autowired

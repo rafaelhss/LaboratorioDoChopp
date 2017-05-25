@@ -3,10 +3,16 @@ package bot.estados;
 import bot.dao.CervejaDAO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
+//TODO verificar se essa classe eh mesmo usada
 class EstadoBebidasCervejas extends Estado {
     @Autowired
     private CervejaDAO cervejaDAO;
+
+    public EstadoBebidasCervejas(ApplicationContext context) {
+        super(context);
+    }
     
 
     @Override

@@ -5,32 +5,34 @@ import bot.dao.CervejaDAO;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EstadoBebidas extends Estado{
 
-    @Autowired
-    private CervejaDAO cervejaDAO;
     
-    @Autowired
-    private CervejaRepository cervejaRepository;
+    private CervejaDAO cervejaDAO = new CervejaDAO(context);
     
-    @Autowired
-    private EstadoCervejas estadoCervejas;
+
+  
+
+    public EstadoBebidas(ApplicationContext context) {
+        super(context);
+    }
     
     @Override
     public void processaTexto(String texto) {
        
         if(texto.trim().equals("1")){  
-            cervejaRepository.findAll();
+            
             List<String> opcoes = cervejaDAO.recuperaOpcoesCervejas();
             mensagemResposta = "Legal, temos as cervejas:";
             
             for(int i=0; i < opcoes.size() ; i++){
                 mensagemResposta += System.lineSeparator() + (i+1) + " - " + opcoes.get(i);
             }            
-            proximoEstado = estadoCervejas;
+            proximoEstado = new EstadoCervejas(context);
             
         } else if(texto.trim().equals("2")){
             mensagemResposta = "Desculpe, não temos drinks no momento!" + System.lineSeparator() +

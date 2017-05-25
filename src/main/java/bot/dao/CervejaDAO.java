@@ -10,6 +10,7 @@ import bot.CervejaRepository;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,19 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CervejaDAO {
-
-    @Autowired
+     
+    private ApplicationContext context;
+    
     private CervejaRepository cervejaRepository;
     
+    
+    public CervejaDAO(ApplicationContext context){
+         this.context = context;
+     }
+    
     public List<String> recuperaOpcoesCervejas() {
+        
+        cervejaRepository = context.getBean(CervejaRepository.class);
         
         Iterable<Cerveja> cervejas = cervejaRepository.findAll();
     
